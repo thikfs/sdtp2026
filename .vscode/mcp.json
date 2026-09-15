@@ -1,0 +1,7 @@
+{
+  "servers": {
+    "playwright": { "command": "npx", "args": ["-y", "@playwright/mcp@latest"] },
+    "chrome-devtools": { "command": "npx", "args": ["-y", "chrome-devtools-mcp@latest"] },
+    "our-product": { "command": "npx", "args": ["tsx", "mcp/server.ts"] }
+  }
+}
