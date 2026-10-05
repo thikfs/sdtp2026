@@ -6,4 +6,5 @@ Append one entry per decision that changes the stack, the scope or the process.
 For the moment the stack seems to be:  
 Cloudflare Pages  
 Python  
-Supabase
+Supabase  
+Whatsapp Cloud API
