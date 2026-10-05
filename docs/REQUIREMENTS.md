@@ -18,10 +18,10 @@ User Info search for admins
 - Privacy: no real personal data in the database or the repository; usability testers give consent
 - Availability: the dev URL is up during class hours; a failed deploy is rolled back the same day
 - The system must be accessible on Chrome, Safari, Firefox.
--The Whatsapp bot must reply within 6 seconds given a request.
--User info must be encrypted before storage
--Making changes to any appointment must look seamless in the GUI
--The system must be flexible so that updates and patches don’t disrupt uptime
+- The Whatsapp bot must reply within 6 seconds given a request.
+- User info must be encrypted before storage
+- Making changes to any appointment must look seamless in the GUI
+- The system must be flexible so that updates and patches don’t disrupt uptime
 
 
 ## User stories
