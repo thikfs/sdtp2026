@@ -5,7 +5,7 @@
 | | |
 |---|---|
 | Team | [Thiago Kumlehn Fajardo Silva, tests and checking the result,shared files, task board and publishing] · [Diego Alvarez, client questions and requirements, shared files, task board and publishing] |
-| Dev URL | [https://...] |
+| Dev URL | [[https://...](https://sdtp2026.thikfs.workers.dev/)] |
 | Board | [https://...] |
 | Course | PR-520 Software Development Team Project, EEK, 2026/27 |
 
