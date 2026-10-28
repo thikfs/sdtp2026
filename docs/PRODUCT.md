@@ -6,6 +6,7 @@ The client is a dentist and his assistant, they work in a small clinic, and we r
 
 ## The process today
 What the person does now, step by step. Where it hurts. How long it takes, what it costs, how often it goes wrong.
+Our client currently relies on notebooks to store client data, appointments, and any information needed. It hurts them because it slows them down when needing to look up client history, appointments have to be checked manually and the notebooks take up space. client data is also lost as notebooks get thrown away. it costs about 5 euros a year for the notebooks.
 
 ## Baseline metric
 One number that describes the process today: minutes per task, errors per week, euros per month. Source of the number.
