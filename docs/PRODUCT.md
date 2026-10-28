@@ -10,9 +10,10 @@ Our client currently relies on notebooks to store client data, appointments, and
 
 ## Baseline metric
 One number that describes the process today: minutes per task, errors per week, euros per month. Source of the number.
+about 4 minutes to confirm an appointment.
 
 ## The statement
-When [persona] is [use case] but [problem], [our capability], so that [baseline metric] goes from [today] to [target].
+When a dental clinic assistant is confirming or rescheduling a client’s appointment but the schedule is on a notebook that the dentist can’t see outside the office, so work stops for verbal confirmation, our shared calendar lets them confirm or move a slot in one action and shows it instantly on the dentist’s phone with a WhatsApp button to the client, so that appointment confirmations go from 4 minutes today to less than 1.
 
 ## Out of scope
 Three things we will not build, so the agent does not build them either.
