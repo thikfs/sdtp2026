@@ -1,4 +1,4 @@
-# [Product name]
+# Clinica Sorriso
 
 [One-sentence product statement from docs/PRODUCT.md]
 
