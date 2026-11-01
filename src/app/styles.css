@@ -5,7 +5,7 @@ box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:en
 *{box-sizing:border-box}[hidden]{display:none!important}
 html,body{height:100%;margin:0}
 body{background:var(--bg);color:var(--ink);font:14px/1.45 "DM Sans",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
-button,input,select{font:inherit;color:inherit}button{cursor:pointer}
+button,input,select,textarea{font:inherit;color:inherit}button{cursor:pointer}
 h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:600;margin:0}
 .app{height:100%;display:grid;grid-template-columns:var(--sw,236px) minmax(0,1fr);transition:grid-template-columns .25s}
 .app.collapsed{--sw:0px}
@@ -28,7 +28,7 @@ nav em{margin-left:auto;font-style:normal;font-size:11px;background:var(--brand)
 .ib:hover{border-color:var(--brand);color:var(--brand)}.ib svg{width:18px;height:18px;transition:transform .25s}
 .app:not(.collapsed) #menu svg{transform:rotate(180deg)}
 .nv .ib{border:0;background:none}.today span{width:14px;height:14px;border:3px solid var(--brand);border-radius:50%}
-select,input:not([type=checkbox]){background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 12px;min-width:0}
+select,textarea,input:not([type=checkbox]){background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 12px;min-width:0}
 select{padding-right:6px}
 :is(select,input,button,.rq):focus-visible{outline:2px solid var(--brand);outline-offset:2px}
 .sp{flex:1}.act{display:flex;gap:8px;margin-left:auto;align-items:center}
@@ -94,11 +94,12 @@ select{padding-right:6px}
 .day{align-self:center;font-size:11.5px;background:var(--surface);color:var(--muted);padding:2px 10px;border-radius:8px}
 .cf{background:var(--surface);padding:12px 14px calc(12px + env(safe-area-inset-bottom,0px));display:grid;gap:8px;border-top:1px solid var(--line)}
 .cf .note{font-size:11.5px;color:var(--muted)}.cf input{border-radius:99px}
-dialog{border:0;border-radius:16px;padding:22px;background:var(--surface);color:var(--ink);width:min(400px,92vw);box-shadow:var(--sh)}
+dialog{border:0;border-radius:16px;padding:22px;background:var(--surface);color:var(--ink);width:min(460px,92vw);box-shadow:var(--sh)}
 dialog::backdrop{background:rgba(10,20,19,.5)}dialog h2{margin-bottom:12px}
 dialog label{display:grid;gap:4px;margin-bottom:10px;color:var(--muted);font-size:12.5px}dialog label>*{color:var(--ink);width:100%}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.dact{display:flex;justify-content:flex-end;gap:8px;margin-top:6px}
-.toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));transform:translate(-50%,30px);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:99px;opacity:0;transition:.25s;z-index:60;pointer-events:none}.toast.on{opacity:1;transform:translate(-50%,0)}
+.toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));transform:translate(-50%,30px);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:99px;opacity:0;transition:.25s;z-index:60;pointer-events:none;display:flex;gap:14px;align-items:center;max-width:calc(100vw - 32px)}.toast.on{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+.toast button{border:0;background:none;color:var(--brand-soft);font-weight:600;padding:2px 4px;text-decoration:underline}
 .agenda{display:none}
 @media(max-width:760px){
 .app{grid-template-columns:1fr}
@@ -121,3 +122,10 @@ dialog label{display:grid;gap:4px;margin-bottom:10px;color:var(--muted);font-siz
 .req .rq{cursor:grab;touch-action:pan-y}.req .rq:active{cursor:grabbing}
 .fc-event-mirror{opacity:.85}
 .loading{color:var(--muted);padding:8px 2px}
+.err{color:var(--danger);margin:0 0 8px;font-size:13px}
+dialog textarea{resize:vertical;border-radius:10px}
+dialog .dact{align-items:center;flex-wrap:wrap}dialog .dact a.btn{text-decoration:none}
+#ask{width:min(380px,92vw)}#ask p{margin:0 0 14px;color:var(--muted)}
+.fc-v-event.is-confirmed .evi i::after{content:" ✓";color:var(--brand);font-weight:700}
+.ac.is-confirmed .ac-t::after{content:" · ✓ Confirmed";color:var(--brand);font-weight:600}
+.fc-highlight{background:color-mix(in srgb,var(--brand) 14%,transparent)}

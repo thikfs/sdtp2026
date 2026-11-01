@@ -2,6 +2,7 @@
 // so the UI runs (and the e2e tests pass) before the real backend exists.
 // All names are invented sample data.
 import { toYmd } from '../schedule';
+import { ApiError } from './errors';
 import type { Appointment, AppointmentRequest, PreferredSlot, SchedulingApi, StaffUser, Treatment } from './types';
 
 type Seed = { now?: Date; user?: StaffUser };
@@ -16,6 +17,7 @@ export function mockApi({ now = new Date(), user = { id: 'u1', name: 'Dra. Helen
     return d;
   };
   let seq = 100;
+  const p3 = (n: number) => String(n).padStart(3, '0');
 
   const appts: Appointment[] = (
     [
@@ -26,7 +28,8 @@ export function mockApi({ now = new Date(), user = { id: 'u1', name: 'Dra. Helen
       ['Rita Molar', 'cons', 8, 15, 45],
     ] as [string, Treatment, number, number, number][]
   ).map(([patientName, treatment, o, h, m], i) => ({
-    id: 'a' + i, patientName, treatment, start: at(o, h).toISOString(), end: at(o, h + m / 60).toISOString(),
+    id: 'a' + i, patientName, patientPhone: `+351 910 000 ${p3(i)}`, treatment, start: at(o, h).toISOString(), end: at(o, h + m / 60).toISOString(),
+    status: o < 1 ? 'confirmed' : 'booked', version: 1,
   }));
 
   const reqs: AppointmentRequest[] = (
@@ -36,14 +39,15 @@ export function mockApi({ now = new Date(), user = { id: 'u1', name: 'Dra. Helen
       ['Beatriz Canino', 'cons', 4, 'morning'], ['Rui Siso', 'prof', 7, 'early_afternoon'],
     ] as [string, Treatment, number, PreferredSlot][]
   ).map(([patientName, treatment, o, preferredSlot], i) => ({
-    id: 'r' + i, patientName, treatment, preferredSlot, preferredDate: toYmd(at(o, 0)),
+    id: 'r' + i, patientName, patientPhone: `+351 920 000 ${p3(i)}`, treatment, preferredSlot, preferredDate: toYmd(at(o, 0)),
     source: 'whatsapp', status: 'pending', createdAt: now.toISOString(),
   }));
 
   const copy = <T>(x: T): T => structuredClone(x);
-  const find = (id: string) => {
+  const find = (id: string, version: number) => {
     const a = appts.find((x) => x.id === id);
-    if (!a) throw new Error(`Appointment ${id} not found`);
+    if (!a) throw new ApiError(404, `Appointment ${id} not found`);
+    if (a.version !== version) throw new ApiError(409, `Appointment ${id} was changed by someone else`);
     return a;
   };
 
@@ -52,21 +56,26 @@ export function mockApi({ now = new Date(), user = { id: 'u1', name: 'Dra. Helen
     listAppointments: async (from, to) =>
       copy(appts.filter((a) => new Date(a.end) > from && new Date(a.start) < to)),
     createAppointment: async (input) => {
-      const a: Appointment = { ...input, id: 'a' + seq++ };
+      const a: Appointment = { status: 'booked', ...input, id: 'a' + seq++, version: 1 };
       appts.push(a);
       return copy(a);
     },
-    updateAppointment: async (id, patch) => copy(Object.assign(find(id), patch)),
-    deleteAppointment: async (id) => {
-      appts.splice(appts.indexOf(find(id)), 1);
+    updateAppointment: async (id, patch, version) => {
+      const a = find(id, version);
+      return copy(Object.assign(a, patch, { version: a.version + 1 }));
+    },
+    deleteAppointment: async (id, version) => {
+      appts.splice(appts.indexOf(find(id, version)), 1);
     },
     listRequests: async () => copy(reqs.filter((r) => r.status === 'pending')),
     scheduleRequest: async (id, { start, end }) => {
       const r = reqs.find((x) => x.id === id);
-      if (!r || r.status !== 'pending') throw new Error(`Request ${id} is not pending`);
+      if (!r) throw new ApiError(404, `Request ${id} not found`);
+      if (r.status !== 'pending') throw new ApiError(409, `Request ${id} is not pending`);
       r.status = 'scheduled';
       const a: Appointment = {
         id: 'a' + seq++, patientName: r.patientName, patientPhone: r.patientPhone, treatment: r.treatment, start, end, requestId: r.id,
+        status: 'booked', version: 1,
       };
       appts.push(a);
       return copy(a);

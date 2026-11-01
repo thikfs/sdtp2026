@@ -5,6 +5,8 @@
 |---|---|---|---|
 | S1 | tests/e2e/s1-*.spec.ts | | todo |
 | Schedule a requested appointment by dragging it onto the calendar | tests/e2e/scheduling.spec.ts | tests/unit/schedule.test.ts | done |
+| Move an appointment (drag, or edit date/time) with undo; overlap warning; opening-hours check; delete with undo; book by selecting a range; keyboard shortcuts | tests/e2e/scheduling.spec.ts | tests/unit/schedule.test.ts | done |
+| Two people editing the same appointment get a 409, not a silent overwrite | – (needs two sessions) | tests/unit/schedule.test.ts, tests/unit/http.test.ts | done |
 
 ## How we run it
 - Locally: `npx playwright test` against the dev server; `npm test` for unit tests
