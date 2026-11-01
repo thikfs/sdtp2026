@@ -13,7 +13,7 @@
 ```bash
 npm install
 cp .env.example .env        # fill in Supabase keys
-npm run dev                 # http://localhost:5173
+npm run dev                 # http://localhost:5173 (landing) · /app/ (staff scheduling)
 npm test                    # unit tests
 npx playwright test         # end-to-end tests against the local dev server
 ```

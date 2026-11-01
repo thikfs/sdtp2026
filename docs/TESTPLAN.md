@@ -4,9 +4,10 @@
 | Story | End-to-end test file | Unit tests | Status |
 |---|---|---|---|
 | S1 | tests/e2e/s1-*.spec.ts | | todo |
+| Schedule a requested appointment by dragging it onto the calendar | tests/e2e/scheduling.spec.ts | tests/unit/schedule.test.ts | done |
 
 ## How we run it
-- Locally: `npx playwright test` against the dev server
+- Locally: `npx playwright test` against the dev server; `npm test` for unit tests
 - On every pull request: GitHub Actions, see .github/workflows/ci.yml
 - Against the deployed dev URL: `BASE_URL=https://... npx playwright test`
 

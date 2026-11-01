@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Clínica Sorriso · Scheduling</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/src/app/styles.css">
+<meta name="robots" content="noindex">
+</head>
+<body>
+<div class="app collapsed" id="app">
+<aside class="side" id="side">
+ <div class="brand"><svg viewBox="0 0 24 24"><path d="M7 3C5 3 3 4.6 3 7.5c0 2 .8 3.200 1.400 5.200.6 2 .6 8.300 2.600 8.300 1.600 0 1.400-5 4-5s2.400 5 4 5c2 0 2-6.300 2.600-8.300.6-2 1.400-3.200 1.400-5.200C21 4.600 19 3 17 3c-1.400 0-2.100.7-4 .7S8.400 3 7 3z"/></svg><div><b>Clínica Sorriso</b><small>Scheduling</small></div></div>
+ <nav id="nav" aria-label="Main"></nav>
+ <div class="me" id="me"><div class="av"></div><div><b></b><small></small></div></div>
+</aside>
+<main class="main">
+ <header class="top">
+  <button class="ib" id="menu" aria-label="Toggle sidebar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>
+  <div class="ctrl" id="ctrl">
+   <select id="vsel" aria-label="Calendar view"><option value="timeGridWeek">Week</option><option value="dayGridMonth">Month</option><option value="timeGridDay">Day</option></select>
+   <div class="nv"><button class="ib" id="prev" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><button class="ib today" id="today" aria-label="Today" title="Today"><span></span></button><button class="ib" id="next" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button></div>
+   <h1 id="title"></h1>
+  </div>
+  <div class="act"><input class="search s-top" placeholder="Search" aria-label="Search appointments"><button class="btn solid" id="create">Create</button><button class="btn danger" id="del" disabled>Delete</button></div>
+ </header>
+ <div class="content" id="content">
+  <section class="left">
+   <div class="calcard" id="calwrap"><div id="cal"></div></div>
+   <div class="agenda" id="agenda"></div>
+   <div class="pane" id="pane" hidden></div>
+   <input class="search s-bot" placeholder="Search" aria-label="Search appointments">
+  </section>
+  <aside class="req" id="req" aria-label="Requested appointments"></aside>
+ </div>
+</main>
+</div>
+<div class="scrim" id="scrim"></div>
+<aside class="chat" id="chat" aria-label="WhatsApp conversation">
+ <div class="ch"><button id="cback" aria-label="Close chat">←</button><div class="av" id="cav"></div><div class="grow"><b id="cname"></b><small>online · WhatsApp bot</small></div></div>
+ <div class="msgs" id="msgs"></div>
+ <div class="cf"><button class="btn solid" id="cok"></button><input placeholder="Type a message" disabled aria-label="Message (demo)"><span class="note">Demo conversation with sample data. In production this opens the patient’s WhatsApp thread.</span></div>
+</aside>
+<dialog id="dlg">
+ <h2>New appointment</h2>
+ <label>Patient<input id="f-p" placeholder="Full name"></label>
+ <label>Treatment<select id="f-t"></select></label>
+ <div class="two"><label>Date<input type="date" id="f-d"></label><label>Time<input type="time" id="f-h" value="09:00" step="900"></label></div>
+ <label>Duration<select id="f-m"><option value="30">30 min</option><option value="45">45 min</option><option value="60" selected>1 hour</option><option value="90">1 h 30</option><option value="120">2 hours</option></select></label>
+ <div class="dact"><button class="btn" id="c-cancel">Cancel</button><button class="btn solid" id="c-save">Save</button></div>
+</dialog>
+<div class="toast" id="toast" role="status"></div>
+<script type="module" src="/src/app/main.ts"></script>
+</body>
+</html>
