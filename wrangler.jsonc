@@ -1,0 +1,7 @@
+// Cloudflare Workers static-asset deploy of the Vite build (dev URL: sdtp2026.thikfs.workers.dev).
+// Build command: npm run build · Deploy command: npx wrangler deploy
+{
+  "name": "sdtp2026",
+  "compatibility_date": "2026-10-01",
+  "assets": { "directory": "./dist" }
+}

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Clínica Sorriso · Scheduling</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/src/app/styles.css">
+<meta name="robots" content="noindex">
+</head>
+<body>
+<div class="app collapsed" id="app">
+<aside class="side" id="side">
+ <div class="brand"><svg viewBox="0 0 24 24"><path d="M7 3C5 3 3 4.6 3 7.5c0 2 .8 3.200 1.400 5.200.6 2 .6 8.300 2.600 8.300 1.600 0 1.400-5 4-5s2.400 5 4 5c2 0 2-6.300 2.600-8.300.6-2 1.400-3.200 1.400-5.200C21 4.600 19 3 17 3c-1.400 0-2.100.7-4 .7S8.400 3 7 3z"/></svg><div><b>Clínica Sorriso</b><small>Scheduling</small></div></div>
+ <nav id="nav" aria-label="Main"></nav>
+ <div class="me" id="me"><div class="av"></div><div><b></b><small></small></div><button class="ib signout" id="signout" type="button" aria-label="Sign out" title="Sign out" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4h3a2 2 0 012 2v12a2 2 0 01-2 2h-3M10 17l5-5-5-5M15 12H4"/></svg></button></div>
+</aside>
+<main class="main">
+ <header class="top">
+  <button class="ib" id="menu" aria-label="Toggle sidebar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>
+  <div class="ctrl" id="ctrl">
+   <select id="vsel" aria-label="Calendar view"><option value="timeGridWeek">Week</option><option value="dayGridMonth">Month</option><option value="timeGridDay">Day</option></select>
+   <div class="nv"><button class="ib" id="prev" aria-label="Previous" title="Previous (←)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><button class="ib today" id="today" aria-label="Today" title="Today (T)"><span></span></button><button class="ib" id="next" aria-label="Next" title="Next (→)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button></div>
+   <h1 id="title"></h1>
+  </div>
+  <div class="act"><input class="search s-top" placeholder="Search" aria-label="Search appointments"><button class="btn solid" id="create" title="New appointment (N)">Create</button><button class="btn danger" id="del" disabled title="Delete selected (Del)">Delete</button></div>
+ </header>
+ <div class="content" id="content">
+  <section class="left">
+   <div class="calcard" id="calwrap"><div id="cal"></div></div>
+   <div class="agenda" id="agenda"></div>
+   <div class="pane" id="pane" hidden></div>
+   <input class="search s-bot" placeholder="Search" aria-label="Search appointments">
+  </section>
+  <aside class="req" id="req" aria-label="Requested appointments"></aside>
+ </div>
+</main>
+</div>
+<div class="scrim" id="scrim"></div>
+<aside class="chat" id="chat" aria-label="WhatsApp conversation">
+ <div class="ch"><button id="cback" aria-label="Close chat">←</button><div class="av" id="cav"></div><div class="grow"><b id="cname"></b><small>online · WhatsApp bot</small></div></div>
+ <div class="msgs" id="msgs"></div>
+ <div class="cf"><button class="btn solid" id="cok"></button><input placeholder="Type a message" disabled aria-label="Message (demo)"><span class="note">Demo conversation with sample data. In production this opens the patient’s WhatsApp thread.</span></div>
+</aside>
+<dialog id="dlg" aria-labelledby="dlg-title">
+ <form id="dlg-form" novalidate>
+ <h2 id="dlg-title">New appointment</h2>
+ <label>Patient<input id="f-p" placeholder="Full name" autocomplete="off" required></label>
+ <div class="two"><label>Phone<input id="f-ph" type="tel" placeholder="+351 …" autocomplete="off"></label><label>Treatment<select id="f-t"></select></label></div>
+ <div class="two"><label>Date<input type="date" id="f-d" required></label><label>Time<input type="time" id="f-h" value="09:00" step="900" required></label></div>
+ <div class="two"><label>Duration (min)<input type="number" id="f-m" min="15" max="720" step="15" value="60" required></label><label>Status<select id="f-s"><option value="booked">Booked</option><option value="confirmed">Confirmed</option></select></label></div>
+ <label>Notes<textarea id="f-n" rows="2" placeholder="Optional"></textarea></label>
+ <p class="err" id="f-err" role="alert" hidden></p>
+ <div class="dact"><button type="button" class="btn danger" id="c-del">Delete</button><a class="btn" id="f-wa" target="_blank" rel="noopener noreferrer">WhatsApp</a><span class="sp"></span><button type="button" class="btn" id="c-cancel">Cancel</button><button type="submit" class="btn solid" id="c-save">Save</button></div>
+ </form>
+</dialog>
+<dialog id="ask" aria-labelledby="ask-t" aria-describedby="ask-m">
+ <h2 id="ask-t"></h2>
+ <p id="ask-m"></p>
+ <div class="dact"><button type="button" class="btn" id="ask-no">Cancel</button><button type="button" class="btn solid" id="ask-yes">Continue</button></div>
+</dialog>
+<div class="signin" id="signin" hidden>
+ <form class="signin-card" id="signin-form" novalidate>
+  <h1>Clínica Sorriso</h1>
+  <p>Staff sign-in</p>
+  <label>Email<input type="email" id="si-email" autocomplete="username" required></label>
+  <label>Password<input type="password" id="si-pw" autocomplete="current-password" required></label>
+  <p class="err" id="si-err" role="alert" hidden></p>
+  <button class="btn solid" id="si-go" type="submit">Sign in</button>
+ </form>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"><span></span><button type="button" hidden></button></div>
+<script type="module" src="/src/app/main.ts"></script>
+</body>
+</html>

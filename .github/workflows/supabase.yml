@@ -1,0 +1,42 @@
+# Database checks: every migration must apply to an empty database, pass the linter and the pgTAP tests,
+# and the real app must work against it. Deploying to the production project is done by the Supabase
+# GitHub integration when a pull request is merged into main (see docs/DATABASE.md).
+name: Supabase
+on:
+  pull_request:
+    paths:
+      - 'supabase/**'
+      - 'src/app/**'
+      - 'tests/e2e/supabase.spec.ts'
+      - 'package-lock.json'
+      - '.github/workflows/supabase.yml'
+  push:
+    branches: [main]
+    paths: ['supabase/**']
+jobs:
+  database:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Start local Supabase (applies migrations + seed)
+        run: npx supabase start -x studio,imgproxy,vector,logflare,storage-api,postgres-meta,supavisor,mailpit
+      - name: Lint the database schema
+        run: npx supabase db lint --level warning --fail-on warning
+      - name: Database tests (pgTAP)
+        run: npx supabase test db
+      - run: npx playwright install --with-deps chromium
+      - name: App end-to-end tests against Supabase
+        run: |
+          export VITE_SUPABASE_ANON_KEY="$(npx supabase status -o env | grep '^ANON_KEY=' | cut -d'"' -f2)"
+          E2E_SUPABASE=1 VITE_SUPABASE_URL=http://127.0.0.1:54321 npx playwright test supabase
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report-supabase
+          path: playwright-report

@@ -12,10 +12,11 @@
 ## Run locally
 ```bash
 npm install
-cp .env.example .env        # fill in Supabase keys
-npm run dev                 # http://localhost:5173
+cp .env.example .env        # empty = sample data; or Supabase keys (docs/DATABASE.md)
+npm run dev                 # http://localhost:5173 (landing) · /app/ (staff scheduling)
 npm test                    # unit tests
 npx playwright test         # end-to-end tests against the local dev server
+npx supabase start          # local database (needs Docker), then: npx supabase test db
 ```
 
 ## Milestones
