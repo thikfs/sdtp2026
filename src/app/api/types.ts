@@ -48,6 +48,7 @@ export interface NewAppointment {
   status?: AppointmentStatus; // defaults to 'booked'
 }
 
+/** Keys present with `undefined` clear that field (sent as null). */
 export type AppointmentPatch = Partial<Pick<Appointment, 'patientName' | 'patientPhone' | 'treatment' | 'start' | 'end' | 'notes' | 'status'>>;
 
 /** Everything the scheduling UI needs from a backend. */
@@ -61,4 +62,6 @@ export interface SchedulingApi {
   listRequests(): Promise<AppointmentRequest[]>;
   /** Turns a pending request into an appointment; the request leaves the pending list. 409 if it is no longer pending. */
   scheduleRequest(id: string, slot: { start: string; end: string }): Promise<Appointment>;
+  /** Optional push updates: calls `onChange` when someone else changes data. Returns an unsubscribe function. */
+  subscribe?(onChange: () => void): () => void;
 }

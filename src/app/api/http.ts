@@ -17,7 +17,8 @@ export function httpApi(baseUrl: string, getToken: () => string | null = () => n
       method,
       headers,
       credentials: 'include',
-      body: body === undefined ? undefined : JSON.stringify(body),
+      // undefined → null so "clear this field" survives JSON (which drops undefined keys)
+      body: body === undefined ? undefined : JSON.stringify(body, (_k, v) => (v === undefined ? null : v)),
       signal: AbortSignal.timeout(15_000),
       });
     } catch (err) {

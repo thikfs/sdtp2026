@@ -5,6 +5,21 @@ The frontend code for it lives in `src/app/api/` — `types.ts` (shapes) and `ht
 
 ## Connecting the frontend
 
+**The backend is Supabase** (see `docs/DATABASE.md`). Set `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` and the app uses `src/app/api/supabase.ts`, where each call below maps to a table read or a database function:
+
+| This contract | Supabase |
+|---|---|
+| `GET /api/me` | `staff` row of the signed-in user (403 if none) |
+| `GET /api/appointments` | `appointment_details` view, filtered by time |
+| `POST /api/appointments` | `rpc('create_appointment')` |
+| `PATCH /api/appointments/:id` | `rpc('update_appointment', { p_id, p_version, p_patch })` |
+| `DELETE /api/appointments/:id` | `rpc('delete_appointment', { p_id, p_version })` |
+| `GET /api/requests?status=pending` | `appointment_requests` where `status = 'pending'` |
+| `POST /api/requests/:id/schedule` | `rpc('schedule_request')` |
+| `POST /api/external/requests` | Edge Function `POST /functions/v1/external-requests` |
+
+The REST description below stays valid for any other backend (`VITE_API_BASE_URL`).
+
 Set `VITE_API_BASE_URL` in `.env` (e.g. `VITE_API_BASE_URL=https://api.example.com`).
 When it is empty the app uses an in-browser mock with sample data (`src/app/api/mock.ts`), so the UI and the tests work before the backend exists.
 
@@ -59,7 +74,7 @@ Only signed-in staff (dentist or assistant) may call these. Both roles have the 
 | GET | `/api/me` | – | `StaffUser` | name and role in the sidebar |
 | GET | `/api/appointments?from=<date-time>&to=<date-time>` | – | `Appointment[]` | every appointment that overlaps `[from, to)` |
 | POST | `/api/appointments` | `{ patientName, patientPhone?, treatment, start, end, notes?, status? }` | `Appointment` (201) | **Create**, selecting a time range, undoing a delete |
-| PATCH | `/api/appointments/:id` + `If-Match: "<version>"` | any of `{ patientName, patientPhone, treatment, start, end, notes, status }` | `Appointment` | editing, dragging / resizing (moving), undo |
+| PATCH | `/api/appointments/:id` + `If-Match: "<version>"` | any of `{ patientName, patientPhone, treatment, start, end, notes, status }`; `null` clears a field | `Appointment` | editing, dragging / resizing (moving), undo |
 | DELETE | `/api/appointments/:id` + `If-Match: "<version>"` | – | 204 | **Delete** |
 | GET | `/api/requests?status=pending` | – | `AppointmentRequest[]` | Requested Appointments list |
 | POST | `/api/requests/:id/schedule` | `{ start, end }` | `Appointment` (201) | dropping a request on the calendar, or **Confirm** in the chat drawer |
@@ -83,17 +98,19 @@ The app checks these before sending, but the backend is the source of truth:
 
 The only third party that talks to the system. It creates requests; it never reads the calendar.
 
+On Supabase this is `POST https://<project>.supabase.co/functions/v1/external-requests`.
+
 | Method | Path | Body | Returns |
 |---|---|---|---|
 | POST | `/api/external/requests` | `{ patientName, patientPhone?, treatment, preferredDate, preferredSlot, durationMinutes?, externalId? }` | `AppointmentRequest` (201) |
 
-- Auth: header `X-Api-Key: <key>`. The key lives in the host's secret store, never in the repository.
+- Auth: header `X-Api-Key: <key>`. The key lives in the host's secret store, never in the repository (Supabase: `META_DASHBOARD_API_KEY` secret).
 - The backend sets `id`, `source: 'whatsapp'`, `status: 'pending'` and `createdAt`.
 - `externalId` (the meta dashboard's own id) makes the call idempotent: sending the same `externalId` twice returns the existing request with `200`.
 - Validation errors return `422` with `{ "error": "<what is wrong>" }`.
 
 ## Keeping screens in sync
-The app re-reads appointments and pending requests every 30 s, when the tab becomes visible again and when the device comes back online (`sync()` in `src/app/main.ts`). It skips a refresh while the user is dragging, saving or has a dialog open. A Supabase Realtime subscription can later call the same `sync()` for instant updates.
+The app re-reads appointments and pending requests every 30 s, when the tab becomes visible again and when the device comes back online (`sync()` in `src/app/main.ts`). It skips a refresh while the user is dragging, saving or has a dialog open. With Supabase, Realtime also triggers `sync()` within a second of a change made by the other person.
 
 ## Not covered yet
 - Declining a request, and the real WhatsApp conversation in the chat drawer (it shows a sample conversation today).

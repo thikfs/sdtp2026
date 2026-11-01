@@ -3,13 +3,22 @@ import { Calendar, type EventInput } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin, { Draggable } from '@fullcalendar/interaction';
-import { ApiError, createApi, type Appointment, type AppointmentRequest, type AppointmentStatus, type Treatment } from './api';
+import { ApiError, createBackend, type Appointment, type AppointmentRequest, type AppointmentStatus, type Treatment } from './api';
+import { signInGate } from './signin';
 import {
   CLOSE_HOUR, OPEN_HOUR, SLOT_HOUR, SLOT_LABEL, TREATMENTS as TX,
   conflicts, endFor, fromYmd, pad2 as p2, preferredRange, requestMinutes, toYmd, validateSlot, waNumber,
 } from './schedule';
 
-const api = createApi();
+const { api, auth } = await createBackend();
+// Staff must be signed in before anything is loaded (no-op with mock data).
+if (auth) {
+  await signInGate(auth, api);
+  auth.onSignedOut(() => location.reload()); // session ended: back to the sign-in screen
+  const out = document.getElementById('signout')!;
+  out.hidden = false;
+  out.onclick = () => auth.signOut();
+}
 const SYNC_EVERY_MS = 30_000;
 
 const $ = <T extends HTMLElement = HTMLElement>(s: string) => document.querySelector(s) as T;
@@ -75,7 +84,14 @@ async function busy<T>(p: Promise<T>): Promise<T> {
 function fail(what: string, err: unknown) {
   console.error(what, err);
   const status = err instanceof ApiError ? err.status : -1;
-  if (status === 409) {
+  if (status === 401) {
+    toast('Your session has ended. Please sign in again.');
+    setTimeout(() => (auth ? auth.signOut() : location.reload()), 1500);
+  } else if (status === 403) {
+    toast(`${what} failed: your account is not allowed to do this.`);
+  } else if (status === 422) {
+    toast(err instanceof Error && err.message ? err.message : `${what} failed: the details are not valid.`);
+  } else if (status === 409) {
     toast(`${what} failed: someone else changed this in the meantime. Showing the latest version.`);
     sync(true);
   } else if (status === 404) {
@@ -379,6 +395,12 @@ async function sync(force = false) {
   }
 }
 setInterval(sync, SYNC_EVERY_MS);
+// Push updates (Supabase Realtime): refresh shortly after someone else changes something.
+let pushTimer = 0;
+api.subscribe?.(() => {
+  clearTimeout(pushTimer);
+  pushTimer = window.setTimeout(() => sync(), 400);
+});
 document.addEventListener('visibilitychange', () => sync());
 addEventListener('online', () => sync(true));
 addEventListener('beforeunload', (e) => {

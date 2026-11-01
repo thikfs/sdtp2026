@@ -14,7 +14,7 @@
 <aside class="side" id="side">
  <div class="brand"><svg viewBox="0 0 24 24"><path d="M7 3C5 3 3 4.6 3 7.5c0 2 .8 3.200 1.400 5.200.6 2 .6 8.300 2.600 8.300 1.600 0 1.400-5 4-5s2.400 5 4 5c2 0 2-6.300 2.600-8.300.6-2 1.400-3.200 1.400-5.200C21 4.600 19 3 17 3c-1.400 0-2.100.7-4 .7S8.400 3 7 3z"/></svg><div><b>Clínica Sorriso</b><small>Scheduling</small></div></div>
  <nav id="nav" aria-label="Main"></nav>
- <div class="me" id="me"><div class="av"></div><div><b></b><small></small></div></div>
+ <div class="me" id="me"><div class="av"></div><div><b></b><small></small></div><button class="ib signout" id="signout" type="button" aria-label="Sign out" title="Sign out" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4h3a2 2 0 012 2v12a2 2 0 01-2 2h-3M10 17l5-5-5-5M15 12H4"/></svg></button></div>
 </aside>
 <main class="main">
  <header class="top">
@@ -60,6 +60,16 @@
  <p id="ask-m"></p>
  <div class="dact"><button type="button" class="btn" id="ask-no">Cancel</button><button type="button" class="btn solid" id="ask-yes">Continue</button></div>
 </dialog>
+<div class="signin" id="signin" hidden>
+ <form class="signin-card" id="signin-form" novalidate>
+  <h1>Clínica Sorriso</h1>
+  <p>Staff sign-in</p>
+  <label>Email<input type="email" id="si-email" autocomplete="username" required></label>
+  <label>Password<input type="password" id="si-pw" autocomplete="current-password" required></label>
+  <p class="err" id="si-err" role="alert" hidden></p>
+  <button class="btn solid" id="si-go" type="submit">Sign in</button>
+ </form>
+</div>
 <div class="toast" id="toast" role="status" aria-live="polite"><span></span><button type="button" hidden></button></div>
 <script type="module" src="/src/app/main.ts"></script>
 </body>
